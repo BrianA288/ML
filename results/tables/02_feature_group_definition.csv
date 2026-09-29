@@ -1,0 +1,6 @@
+Feature_Set,N_Features,Added
+F1_Volatility,10,"RV_5, RV_10, RV_21, RV_63, RV_126, EWMA_Vol_094, RV21_Change_1D, RV21_Change_5D, VolOfVol_21, VolOfVol_63"
+F2_Returns_Downside,21,"Return_1D, Abs_Return_1D, Squared_Return_1D, Return_5D, Return_21D, Return_63D, Downside_Vol_21, Downside_Vol_63, Drawdown_21, Drawdown_63, Drawdown_126"
+F3_Range_Liquidity,26,"Sector_HL_Range, Sector_Parkinson_Var, Sector_Parkinson_Vol, Sector_Log_Dollar_Volume, Dollar_Volume_Change_21D"
+F4_Market_Commodities,42,"AUDUSD_Return_1D, AUDUSD_Return_21D, AUDUSD_RV21, VIX_Return_1D, VIX_Return_21D, VIX_RV21, VIX_Level, ASX200_Return_1D, ASX200_Return_21D, ASX200_RV21, GOLD_Return_1D, GOLD_Return_21D, GOLD_RV21, COPPER_Return_1D, COPPER_Return_21D, COPPER_RV21"
+F5_Plus_Macro,48,"AUS_CPI_YOY, AUS_UNEMPLOYMENT, AUS_LONG_RATE, AUS_SHORT_RATE, AUS_GDP_QOQ, AUS_YIELD_SPREAD"

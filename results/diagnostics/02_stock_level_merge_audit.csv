@@ -1,0 +1,4 @@
+Horizon,Rows,Unique_Dates,Unique_Tickers,Columns,Output
+5,110350,2207,162,69,data\processed\stock_level_features_h5.parquet
+21,110350,2207,162,69,data\processed\stock_level_features_h21.parquet
+63,110350,2207,162,69,data\processed\stock_level_features_h63.parquet

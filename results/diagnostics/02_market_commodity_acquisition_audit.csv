@@ -1,0 +1,7 @@
+Variable,Source,Lagged_One_Source_Observation,Timing_Rationale,Status
+AUDUSD,AUDUSD=X,True,Conservative FX availability at ASX close,Downloaded
+VIX,^VIX,True,US session timing,Downloaded
+ASX200,^AXJO,False,Same Australian close is observable,Downloaded
+GOLD,GC=F,True,Global/US futures timing,Downloaded
+COPPER,HG=F,True,Global/US futures timing,Downloaded
+IRON_ORE,source_data/iron_ore_daily.csv,True,Conservative timing unless exact release/close timing is documented,Not supplied — excluded

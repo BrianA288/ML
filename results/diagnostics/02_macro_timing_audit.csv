@@ -1,0 +1,6 @@
+Feature,Source,Source_Series,Availability_Method,Description,Status
+AUS_CPI_YOY,ABS,CPI 1.1.0: 1.10001.10.50.Q,Quarter-end + 35 days,All Groups Australia CPI index transformed to year-on-year inflation,Downloaded
+AUS_UNEMPLOYMENT,ABS,LF: M13.3.1599.20.AUS.M,Month-end + 20 days,Monthly unemployment rate; persons; seasonally adjusted; Australia,Downloaded
+AUS_GDP_QOQ,ABS,ANA_AGG: M1.GPM.20.AUS.Q,Quarter-end + 70 days,Seasonally adjusted chain-volume real GDP transformed to quarter-on-quarter growth,Downloaded
+AUS_SHORT_RATE,RBA,F1.1 / FIRMMBAB90,Month-end + 10 days,Monthly 90-day Bank Accepted Bills / Negotiable Certificates of Deposit rate,Downloaded
+AUS_LONG_RATE,RBA,F2.1 / FCMYGBAG10,Month-end + 10 days,Monthly Australian Government 10-year bond yield,Downloaded

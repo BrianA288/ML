@@ -1,0 +1,7 @@
+Horizon,Period,Models,Common_Dates,First_Common_Date,Last_Common_Date
+5,Test,5,430,2025-01-02,2026-09-11
+5,Validation,5,506,2023-01-03,2024-12-31
+21,Test,5,414,2025-01-02,2026-08-20
+21,Validation,5,506,2023-01-03,2024-12-31
+63,Test,5,372,2025-01-02,2026-06-23
+63,Validation,5,506,2023-01-03,2024-12-31

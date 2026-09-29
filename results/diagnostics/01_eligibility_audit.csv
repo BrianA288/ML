@@ -1,0 +1,5 @@
+Metric,Value
+Raw panel rows,1997744
+Eligible stock-date rows,1355330
+Non-finite stock returns after cleaning,0
+Non-positive/non-finite lagged market cap rows,639732
