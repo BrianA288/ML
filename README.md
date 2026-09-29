@@ -10,6 +10,7 @@ In a new Colab notebook, run:
 !git clone https://github.com/BrianA288/ML.git /content/ML
 %cd /content/ML
 !pip -q install -r requirements.txt
+!python prepare_colab.py
 ```
 
 Then open a notebook from the `notebooks/` folder in Colab. Before running its other cells in a new runtime, set its working directory:
@@ -17,6 +18,8 @@ Then open a notebook from the `notebooks/` folder in Colab. Before running its o
 ```python
 %cd /content/ML
 ```
+
+The 31.8 MB interim equity panel is stored in two parts because GitHub web uploads limit individual files; `prepare_colab.py` reconstructs it at `data/interim/materials_equity_panel.parquet` and checks its SHA-256 hash.
 
 The notebooks use paths relative to the repository root. Colab runtimes are temporary, so clone and change directory again after a runtime reset. You can also open an individual notebook via GitHub's **Open in Colab** option, but still run the setup above in that runtime first.
 
