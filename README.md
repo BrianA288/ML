@@ -2,26 +2,38 @@
 
 This repository contains the **actual notebooks, datasets, diagnostics, figures and result tables** for the materials sector volatility forecasting project. The project compares conventional models with direct sector and pooled stock-level machine learning at 5, 21 and 63 trading day horizons. The primary result uses the 21 trading day horizon and QLIKE.
 
-## Open in Google Colab
+## Standalone local setup
 
-In a new Colab notebook, run:
+Use Python 3.11 or newer with a local Jupyter environment. Download the repository ZIP and extract it, or clone it:
 
-```python
-!git clone https://github.com/BrianA288/ML.git /content/ML
-%cd /content/ML
-!pip -q install -r requirements.txt
-!python prepare_colab.py
+```bash
+git clone https://github.com/BrianA288/ML.git
+cd ML
+python -m venv .venv
 ```
 
-Then open a notebook from the `notebooks/` folder in Colab. Before running its other cells in a new runtime, set its working directory:
+Activate the virtual environment:
 
-```python
-%cd /content/ML
+- Windows PowerShell: ` .\.venv\Scripts\Activate.ps1 `
+- macOS/Linux: `source .venv/bin/activate`
+
+Then run these commands from the repository root:
+
+```bash
+python -m pip install -r requirements.txt
+python prepare_colab.py
+python -m jupyterlab
 ```
 
-The 31.8 MB interim equity panel is stored in two parts because GitHub web uploads limit individual files; `prepare_colab.py` reconstructs it at `data/interim/materials_equity_panel.parquet` and checks its SHA-256 hash.
+Open the numbered notebooks in `notebooks/` and run their cells in order. The setup helper restores the 31.8 MB interim equity panel from its two bundled parts at `data/interim/materials_equity_panel.parquet` and verifies its SHA-256 checksum. Its existing filename is retained to preserve the file path.
 
-The notebooks use paths relative to the repository root. Colab runtimes are temporary, so clone and change directory again after a runtime reset. You can also open an individual notebook via GitHub's **Open in Colab** option, but still run the setup above in that runtime first.
+The notebooks resolve project paths from either the repository root or the `notebooks/` directory. Keep the bundled folder structure intact. The project runs locally; no hosted notebook service or cloud runtime is required.
+
+## Data access and saved results
+
+The repository includes the raw data, processed features and saved results. Notebook 0 retrieves equity data from Yahoo Finance, and notebook 2 retrieves external market and economic data from Yahoo Finance, ABS and RBA; those acquisition steps require internet access. Updating those inputs can change subsequent forecasts and results.
+
+To work from the saved processed datasets, run notebooks 3–7. To inspect the final results and regenerate report figures, start with notebook 7. Install dependencies before starting; model fitting and report generation then use the bundled local files.
 
 ## Repository layout
 
