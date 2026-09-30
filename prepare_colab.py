@@ -1,4 +1,4 @@
-"""Restore the large interim Parquet panel after cloning the repository."""
+"""Restore and verify the bundled interim Parquet panel for local use."""
 from hashlib import sha256
 from pathlib import Path
 
