@@ -8,3 +8,4 @@ arch
 xgboost
 yfinance
 requests
+jupyterlab
