@@ -1,7 +1,6 @@
 # Integrated Australian Materials Volatility Forecasting
 
-This repository contains the **actual notebooks, datasets, diagnostics, figures and result tables** for the materials sector volatility forecasting project. The project compares conventional models with direct sector and pooled stock-level machine learning at 5, 21 and 63 trading day horizons. The primary result uses the 21 trading day horizon and QLIKE.
-
+This project forecasts realised volatility for a dynamic top-50 Australian Materials-sector portfolio at 5, 21 and 63 trading-day horizons. It compares traditional volatility models with direct sector-level machine learning and a pooled stock-level approach. The 21-day horizon is the primary evaluation setting, with pooled Random Forest producing the strongest result on the common final walk-forward sample.
 ## Standalone local setup
 
 Use Python 3.11 or newer with a local Jupyter environment. Download the repository ZIP and extract it, or clone it:
