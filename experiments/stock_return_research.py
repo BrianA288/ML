@@ -37,7 +37,7 @@ def forward_returns(features, price_history, horizon=H):
     complete = (p.notna().rolling(horizon + 1, min_periods=horizon + 1)
                 .sum().shift(-horizon).eq(horizon + 1))
     target = (p.shift(-horizon).div(p).sub(1)).where(complete)
-    target = target.stack(dropna=False).rename("Target_21D_Return").reset_index()
+    target = target.stack(future_stack=True).rename("Target_21D_Return").reset_index()
     return features.merge(target, on=["Date", "Yahoo_Ticker"], how="left",
                           validate="one_to_one")
 
