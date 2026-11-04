@@ -16,27 +16,42 @@ EXCLUDE = {"Date", "Yahoo_Ticker", "Stock_Return", "Target_Stock_RV_5",
            "Target_Stock_RV_21", "Target_Stock_RV_63"}
 
 
-def forward_returns(data, horizon=H):
-    """Compute compounded return over strictly the next h market sessions."""
-    r = data.pivot(index="Date", columns="Yahoo_Ticker", values="Stock_Return").sort_index()
-    lr = np.log1p(r.where(r > -1))
-    future = [lr.shift(-j) for j in range(1, horizon + 1)]
-    counts = sum(v.notna().astype(int) for v in future)
-    target = np.expm1(sum(v.fillna(0) for v in future)).where(counts.eq(horizon))
-    target = target.stack(dropna=False).rename("Target_21D_Return").reset_index()
-    return data.merge(target, on=["Date", "Yahoo_Ticker"], validate="one_to_one")
+def forward_returns(features, price_history, horizon=H):
+    """21 market-session adjusted-close return from the full stock-price universe.
+
+    Require all h+1 daily closes (t through t+h). A departure from the top-50
+    feature universe must not truncate a stock's observed forward return.
+    """
+    required = {"Date", "Yahoo_Ticker", "Adj_Close"}
+    if not required.issubset(price_history.columns):
+        raise ValueError(f"Missing price columns: {required - set(price_history.columns)}")
+    prices = price_history[["Date", "Yahoo_Ticker", "Adj_Close"]].copy()
+    prices["Date"] = pd.to_datetime(prices["Date"])
+    if prices.duplicated(["Date", "Yahoo_Ticker"]).any():
+        raise ValueError("Duplicate full-price ticker/date rows")
+    sessions = pd.DatetimeIndex(sorted(features.Date.unique()))
+    p = (prices.pivot(index="Date", columns="Yahoo_Ticker", values="Adj_Close")
+         .reindex(sessions).astype(float))
+    p.index.name = "Date"
+    p = p.where(np.isfinite(p) & p.gt(0))
+    complete = (p.notna().rolling(horizon + 1, min_periods=horizon + 1)
+                .sum().shift(-horizon).eq(horizon + 1))
+    target = (p.shift(-horizon).div(p).sub(1)).where(complete)
+    target = target.stack(future_stack=True).rename("Target_21D_Return").reset_index()
+    return features.merge(target, on=["Date", "Yahoo_Ticker"], how="left",
+                          validate="one_to_one")
 
 
-def prepare(source):
+def prepare(source, price_history):
     d = source.copy()
     required = {"Date", "Yahoo_Ticker", "Stock_Return"}
     if not required.issubset(d.columns):
-        raise ValueError(f"Missing columns: {required - set(d.columns)}")
+        raise ValueError(f"Missing feature columns: {required - set(d.columns)}")
     d["Date"] = pd.to_datetime(d["Date"])
     d = d.sort_values(["Date", "Yahoo_Ticker"]).reset_index(drop=True)
     if d.duplicated(["Date", "Yahoo_Ticker"]).any():
-        raise ValueError("Duplicate ticker/date observations")
-    d = forward_returns(d)
+        raise ValueError("Duplicate ticker/date feature observations")
+    d = forward_returns(d, price_history)
     features = [c for c in d.select_dtypes(include="number").columns
                 if c not in EXCLUDE and not c.startswith("Target_")]
     if not features:
@@ -73,8 +88,8 @@ def scores(actual, predicted):
             "Directional_Accuracy": float(np.mean((a > 0) == (p > 0)))}
 
 
-def run(source, output, refit_every=21):
-    d, features = prepare(source)
+def run(source, prices, output, refit_every=21):
+    d, features = prepare(source, prices)
     sessions = pd.DatetimeIndex(sorted(d.Date.unique()))
     validation = []
     for year in [2023, 2024]:
@@ -131,6 +146,7 @@ def run(source, output, refit_every=21):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, default=BASE / "data/processed/stock_level_features_h21.parquet")
+    parser.add_argument("--prices", type=Path, default=BASE / "data/raw/materials_ohlcv.parquet")
     parser.add_argument("--output", type=Path, default=BASE / "results/tables")
     args = parser.parse_args()
-    run(pd.read_parquet(args.input), args.output)
+    run(pd.read_parquet(args.input), pd.read_parquet(args.prices), args.output)
