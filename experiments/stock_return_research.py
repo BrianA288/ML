@@ -102,9 +102,6 @@ def run(source, output, refit_every=21):
             model.fit(tr[features], tr.Target_21D_Return)
         batch = test.loc[test.Date.eq(date), ["Date", "Yahoo_Ticker",
                                                "Stock_Return", "Target_21D_Return"]].copy()
-        batch["Predicted_21D_Return"] = model.predict(
-            d.loc[test.Date.eq(date) & d.Date.ge("2025-01-01"), features]
-        ) if False else np.nan
         # Match prediction rows to the original feature rows by date and ticker.
         x = d.loc[d.Date.eq(date) & d.Target_21D_Return.notna()]
         batch["Predicted_21D_Return"] = model.predict(x[features])
