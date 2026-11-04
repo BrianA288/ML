@@ -1,0 +1,33 @@
+name: Stock return v2 research comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/return-signal-benchmarks-v2
+    paths:
+      - 'experiments/stock_return_v2.py'
+      - 'tests/test_stock_return_v2.py'
+      - '.github/workflows/stock-return-v2.yml'
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install 'numpy>=1.24' 'pandas>=2.1' pyarrow scikit-learn pytest
+      - name: Validate momentum and target timing
+        run: python -m pytest -q tests/test_stock_return_research.py tests/test_stock_return_v2.py
+      - name: Evaluate validation-selected candidates on historical test
+        run: python -m experiments.stock_return_v2
+      - name: Upload research outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: stock-return-v2-research
+          path: results/tables/09_return_v2_*.csv
+          retention-days: 30
