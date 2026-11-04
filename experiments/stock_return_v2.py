@@ -28,6 +28,7 @@ def augment(source, price_history):
         raise ValueError("Duplicate adjusted prices")
     calendar = pd.DatetimeIndex(sorted(features.Date.unique()))
     close = prices.pivot(index="Date", columns="Yahoo_Ticker", values="Adj_Close").reindex(calendar)
+    close.index.name = "Date"
     close = close.where(np.isfinite(close) & close.gt(0))
     daily = close.pct_change(fill_method=None)
     momentum = {}
