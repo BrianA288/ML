@@ -109,10 +109,17 @@ def run(source, output, refit_every=21):
         batch["Training_Cutoff"] = cutoff
         rows.append(batch)
     preds = pd.concat(rows, ignore_index=True)
+    baseline = scores(preds.Target_21D_Return, np.zeros(len(preds)))
     summary = {"Selected_Model": selected, "Horizon": H,
                "Validation_Years": "2023,2024", "Test_Start": "2025-01-01",
                "Refit_Every": refit_every,
-               **scores(preds.Target_21D_Return, preds.Predicted_21D_Return)}
+               **scores(preds.Target_21D_Return, preds.Predicted_21D_Return),
+               "Zero_Baseline_MAE": baseline["MAE"],
+               "Zero_Baseline_RMSE": baseline["RMSE"],
+               "Beats_Zero_MAE": bool(
+                   mean_absolute_error(preds.Target_21D_Return, preds.Predicted_21D_Return)
+                   < baseline["MAE"]
+               )}
     output.mkdir(parents=True, exist_ok=True)
     val.to_csv(output / "08_return_validation.csv", index=False)
     preds.to_csv(output / "08_return_historical_predictions.csv", index=False)
