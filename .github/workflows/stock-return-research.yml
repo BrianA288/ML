@@ -2,6 +2,13 @@ name: Historical stock-return research
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - fix/return-target-full-price-history
+    paths:
+      - 'experiments/stock_return_research.py'
+      - 'tests/test_stock_return_research.py'
+      - '.github/workflows/stock-return-research.yml'
 
 jobs:
   historical-evaluation:
