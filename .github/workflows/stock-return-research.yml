@@ -1,0 +1,25 @@
+name: Historical stock-return research
+
+on:
+  workflow_dispatch:
+
+jobs:
+  historical-evaluation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install numpy pandas pyarrow scikit-learn pytest
+      - name: Check target alignment and leakage safeguards
+        run: python -m pytest -q tests/test_stock_return_research.py
+      - name: Evaluate historical return predictions
+        run: python experiments/stock_return_research.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: historical-return-research
+          path: results/tables/08_return_*.csv
+          retention-days: 30
