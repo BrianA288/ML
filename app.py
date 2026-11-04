@@ -111,3 +111,48 @@ st.write(
     "model, combine out-of-sample return and volatility forecasts, test "
     "transaction costs and signal thresholds, then schedule daily inference."
 )
+
+
+st.divider()
+st.subheader("Historical individual-stock return experiment")
+st.caption(
+    "Optional experiment data: upload 08_return_historical_predictions.csv "
+    "from the GitHub Actions artifact. These are retrospective 21-trading-day "
+    "forecasts, not live predictions or validated trading recommendations."
+)
+uploaded = st.file_uploader(
+    "Upload historical stock-return predictions (CSV)",
+    type=["csv"],
+    key="return_experiment",
+)
+if uploaded is not None:
+    try:
+        returns = pd.read_csv(uploaded, parse_dates=["Date"])
+        mandatory = {"Date", "Yahoo_Ticker", "Target_21D_Return", "Predicted_21D_Return"}
+        if not mandatory.issubset(returns.columns):
+            st.error(f"The upload is missing fields: {sorted(mandatory - set(returns.columns))}")
+        else:
+            dates = sorted(returns.Date.dropna().unique())
+            if not dates:
+                st.warning("No valid historical forecast dates found.")
+            else:
+                day = st.selectbox("Historical forecast origin", dates,
+                                   index=len(dates)-1, format_func=lambda x: str(pd.Timestamp(x).date()))
+                snap = returns.loc[returns.Date.eq(day)].copy()
+                snap["Forecast return (%)"] = pd.to_numeric(
+                    snap.Predicted_21D_Return, errors="coerce"
+                ).mul(100)
+                snap["Realised future return (%)"] = pd.to_numeric(
+                    snap.Target_21D_Return, errors="coerce"
+                ).mul(100)
+                st.dataframe(
+                    snap[["Yahoo_Ticker", "Forecast return (%)", "Realised future return (%)"]]
+                    .sort_values("Forecast return (%)", ascending=False),
+                    hide_index=True, use_container_width=True,
+                )
+                st.warning(
+                    "This table is a historical model evaluation. Its returns are "
+                    "not investment advice, and it contains no Buy/Hold/Sell recommendations."
+                )
+    except (ValueError, pd.errors.ParserError) as e:
+        st.error(f"Invalid return predictions file: {e}")
